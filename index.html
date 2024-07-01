@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 23 - Lightbox Image Gallery</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.2s linear;
+        }
+
+        body{
+            background: #1f1f1f;
+        }
+
+        h1{
+            font-size: 2rem;
+            margin-top: 10vh;
+            color: #ff4d4d;
+            text-align: center;
+            text-transform: capitalize;
+            font-family: fantasy;
+        }
+
+        .gallery{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .gallery .image{
+            height: 200px;
+            width: 200px;
+            margin: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 3px 5px rgba(255, 77, 77, 0.6);
+        }
+
+        .gallery .image img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .gallery .image img:hover{
+            transform: scale(1.1);
+        }
+
+        #lightboxbg{
+            position: fixed;
+            z-index: 150;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            /* backdrop-filter: blur(5px); */
+            display: none;
+        }
+
+        #lightboxbg.active{
+            /* display: grid;
+            place-items: center; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #lightboximg{
+            height: 50%;
+            max-width: 80%;
+            border: 4px solid #ff4d4d;
+            box-shadow: 1px 3px 20px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.5s ease-in-out;
+        } 
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let villians = [
+        {
+        alt: "Joker",
+        src: "https://rare-gallery.com/thumbs/362528-4k-wallpaper.jpg"
+    },
+    {
+        alt: "Penny Wise",
+        src: "https://bloody-disgusting.com/wp-content/uploads/2017/08/pennywise-scary.jpg"
+    },
+    {
+        alt: "Thanos",
+        src: "https://mrwallpaper.com/images/hd/marvel-villain-thanos-qw0tzjg9vqkn0ju7.jpg"
+    },
+    {
+        alt: "Chucky",
+        src: "https://c4.wallpaperflare.com/wallpaper/536/16/49/black-child-039-s-chucky-dark-wallpaper-preview.jpg"
+    },
+    {
+        alt: "Scar",
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvFbqAav038rGr8q4JwCgXM_7BwtBcOxinVkf5OLnEHdcbdh4qPmkgDJsbLkcibGy2zLs&usqp=CAU"
+    },
+    {
+        alt: "Voldemort",
+        src: "https://images5.alphacoders.com/112/1127557.jpg"
+    },
+    {
+        alt: "Agent Smith",
+        src: "https://wallpapercave.com/wp/wp5635750.jpg"
+    },
+    {
+        alt: "T-1000",
+        src: "https://c4.wallpaperflare.com/wallpaper/589/246/549/terminator-terminator-genisys-lee-byung-hun-t-1000-wallpaper-preview.jpg"
+    },
+    {
+        alt: "John Cramer",
+        src: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e1b2de10-3fb7-483f-a458-497926ae3403/d9ipbl4-0aa8b40b-00e3-4cd9-9f24-811db165049d.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2UxYjJkZTEwLTNmYjctNDgzZi1hNDU4LTQ5NzkyNmFlMzQwM1wvZDlpcGJsNC0wYWE4YjQwYi0wMGUzLTRjZDktOWYyNC04MTFkYjE2NTA0OWQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.iyvPVqxaH1l1ZSos6oYLxNpYtHRlag_XwTXdHkCnNIU"
+    },
+    {
+        alt: "Walter White",
+        src: "https://wallpapercave.com/wp/wp1932802.jpg"
+    }
+        ]
+
+        let h1 = document.createElement('h1');
+        h1.textContent = "Villians Gallery";
+        document.body.appendChild(h1);
+
+        let gallery = document.createElement('div');
+        gallery.className = "gallery";
+        document.body.appendChild(gallery);
+
+        for(let i=0; i<villians.length;i++){
+            document.querySelector(".gallery").innerHTML+=`
+            <div class="image">
+            <img src=${villians[i].src} alt=${villians[i].alt}>
+    </div>
+            `;
+        }
+
+        let lightboxbg = document.createElement('div');
+        lightboxbg.id = "lightboxbg";
+        document.body.appendChild(lightboxbg);
+
+        let images = document.querySelectorAll(".image");
+        images.forEach(image => {
+            image.addEventListener('click', e =>{
+                lightboxbg.classList.add("active");
+                let lightboximg = document.createElement("img");
+                lightboximg.src = image.querySelector("img").src;
+                lightboximg.id = "lightboximg";
+                while(lightboxbg.firstChild){
+                    lightboxbg.removeChild(lightboxbg.firstChild);
+                }
+                lightboxbg.appendChild(lightboximg);
+            })
+        })
+
+        lightboxbg.addEventListener('click', e => {
+            lightboxbg.classList.remove("active");
+        })
+    </script>
+</body>
+</html>
